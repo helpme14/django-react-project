@@ -1,12 +1,12 @@
-import React from "react";
 import {
   BrowserRouter as Router,
   Routes,
   Route,
   useLocation,
+  Navigate,
 } from "react-router-dom";
 import "./index.css";
-
+import NotFound from "./views/NotFound";
 import { AuthProvider } from "./context/AuthContext";
 import PrivateRoute from "./utils/PrivateRoute";
 import Navbar from "./views/Navbar";
@@ -14,6 +14,8 @@ import Homepage from "./views/Homepage";
 import Dashboard from "./views/Dashboard";
 import Loginpage from "./views/Loginpage";
 import Registerpage from "./views/Registerpage";
+import AuthContext from "./context/AuthContext";
+import { useContext } from "react";
 
 function App() {
   return (
@@ -27,8 +29,14 @@ function App() {
 
 function AppContent() {
   const location = useLocation();
-  const noNavbarRoutes = ["/login", "/register", "/dashboard"];
-  const showNavbar = !noNavbarRoutes.includes(location.pathname);
+  // const noNavbarRoutes = ["/login", "/register", "/dashboard"];
+  const showNavbar = location.pathname === "/";
+  const { user } = useContext(AuthContext);
+
+  // Redirect logged-in users trying to access the login page
+  if (user && location.pathname === "/login") {
+    return <Navigate to="/dashboard" />;
+  }
 
   return (
     <>
@@ -45,6 +53,8 @@ function AppContent() {
             </PrivateRoute>
           }
         />
+        <Route path="*" element={<NotFound />} />{" "}
+        {/* Catch-all route for 404 */}
       </Routes>
     </>
   );

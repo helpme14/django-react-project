@@ -1,6 +1,6 @@
-import React, { createContext, useState, useEffect } from "react";
-import { jwtDecode } from "jwt-decode"; // Updated import
-import { useNavigate } from "react-router-dom";
+import { createContext, useState, useEffect, useCallback } from "react";
+import { jwtDecode } from "jwt-decode";
+import { useNavigate, useLocation } from "react-router-dom";
 import swal from "sweetalert2";
 import PropTypes from "prop-types";
 
@@ -23,6 +23,7 @@ export const AuthProvider = ({ children }) => {
 
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const location = useLocation(); // Get the current route
 
   const loginUser = async (email, password) => {
     const response = await fetch(
@@ -40,14 +41,14 @@ export const AuthProvider = ({ children }) => {
 
     if (response.status === 200) {
       setAuthTokens(data);
-      setUser(jwtDecode(data.access)); // Updated to jwtDecode
+      setUser(jwtDecode(data.access));
       localStorage.setItem("authTokens", JSON.stringify(data));
-      navigate("/dashboard"); // Navigate to dashboard after login
+      navigate("/dashboard");
       swal.fire({
         title: "Login Successful",
         icon: "success",
         toast: true,
-        timer: 6000,
+        timer: 3000,
         position: "top-right",
         timerProgressBar: true,
         showConfirmButton: false,
@@ -60,7 +61,7 @@ export const AuthProvider = ({ children }) => {
         title: "Username or password does not exist",
         icon: "error",
         toast: true,
-        timer: 6000,
+        timer: 3000,
         position: "top-right",
         timerProgressBar: true,
         showConfirmButton: false,
@@ -69,6 +70,10 @@ export const AuthProvider = ({ children }) => {
   };
 
   const registerUser = async (email, username, password, password2) => {
+    setAuthTokens(null);
+    setUser(null);
+    localStorage.removeItem("authTokens");
+    
     const response = await fetch(
       "http://127.0.0.1:8000/authentication/register/",
       {
@@ -90,7 +95,7 @@ export const AuthProvider = ({ children }) => {
         title: "Registration Successful, Login Now",
         icon: "success",
         toast: true,
-        timer: 6000,
+        timer: 3000,
         position: "top-right",
         timerProgressBar: true,
         showConfirmButton: false,
@@ -100,7 +105,7 @@ export const AuthProvider = ({ children }) => {
         title: "An Error Occurred " + response.status,
         icon: "error",
         toast: true,
-        timer: 6000,
+        timer: 3000,
         position: "top-right",
         timerProgressBar: true,
         showConfirmButton: false,
@@ -108,7 +113,7 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const logoutUser = () => {
+  const logoutUser = useCallback(() => {
     setAuthTokens(null);
     setUser(null);
     localStorage.removeItem("authTokens");
@@ -117,12 +122,12 @@ export const AuthProvider = ({ children }) => {
       title: "You have been logged out...",
       icon: "success",
       toast: true,
-      timer: 6000,
+      timer: 3000,
       position: "top-right",
       timerProgressBar: true,
       showConfirmButton: false,
     });
-  };
+  }, [navigate]);
 
   const contextData = {
     user,
@@ -136,35 +141,34 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     if (authTokens) {
-      setUser(jwtDecode(authTokens.access)); // Updated to jwtDecode
+      setUser(jwtDecode(authTokens.access));
     }
     setLoading(false);
   }, [authTokens]);
 
   useEffect(() => {
-    const handleActivity = () => {
-      // Reset the inactivity timer on any user activity
-      if (window.logoutTimer) {
-        clearTimeout(window.logoutTimer);
-      }
-      window.logoutTimer = setTimeout(logoutUser, 5 * 60 * 1000); // 5 minutes
-    };
+    if (location.pathname === "/dashboard") {
+      const handleActivity = () => {
+        if (window.logoutTimer) {
+          clearTimeout(window.logoutTimer);
+        }
+        window.logoutTimer = setTimeout(logoutUser, 5 * 60 * 1000); // 5 minutes
+      };
 
-    // Set up event listeners to detect user activity
-    window.addEventListener("mousemove", handleActivity);
-    window.addEventListener("keydown", handleActivity);
-    window.addEventListener("click", handleActivity);
+      window.addEventListener("mousemove", handleActivity);
+      window.addEventListener("keydown", handleActivity);
+      window.addEventListener("click", handleActivity);
 
-    // Clean up event listeners and timer on unmount
-    return () => {
-      window.removeEventListener("mousemove", handleActivity);
-      window.removeEventListener("keydown", handleActivity);
-      window.removeEventListener("click", handleActivity);
-      if (window.logoutTimer) {
-        clearTimeout(window.logoutTimer);
-      }
-    };
-  });
+      return () => {
+        window.removeEventListener("mousemove", handleActivity);
+        window.removeEventListener("keydown", handleActivity);
+        window.removeEventListener("click", handleActivity);
+        if (window.logoutTimer) {
+          clearTimeout(window.logoutTimer);
+        }
+      };
+    }
+  }, [location.pathname, logoutUser]); // Depend on the current route
 
   return (
     <AuthContext.Provider value={contextData}>

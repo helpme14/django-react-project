@@ -10,7 +10,7 @@ import MenuItem from "@mui/material/MenuItem";
 import Drawer from "@mui/material/Drawer";
 import MenuIcon from "@mui/icons-material/Menu";
 import logo from "../utils/logo.png";
-
+import TextField from "@mui/material/TextField"; // Import TextField
 const logoStyle = {
   width: "50px", // adjust the width as needed
   height: "auto", // keeps the aspect ratio
@@ -104,7 +104,7 @@ function AppAppBar() {
                   sx={{ py: "6px", px: "12px" }}
                 >
                   <Typography variant="body3" color="text.primary">
-                    Pricing
+                    Shop
                   </Typography>
                 </MenuItem>
                 <MenuItem
@@ -112,15 +112,32 @@ function AppAppBar() {
                   sx={{ py: "6px", px: "12px" }}
                 >
                   <Typography variant="body3" color="text.primary">
-                    FAQ
+                    Contact
                   </Typography>
                 </MenuItem>
               </Box>
+
+              <Box sx={{}}>
+                <TextField
+                  variant="outlined"
+                  placeholder="Search..."
+                  size="small"
+                  sx={{
+                    bgcolor: "#fff",
+                    borderRadius: 1,
+                    width: { md: "250" },
+                    marginLeft: "20px",
+                    display: { xs: "none", md: "flex" },
+                    marginRight: { md: "100px" },
+                  }}
+                />
+              </Box>
             </Box>
+
             <Box
               sx={{
                 display: { xs: "none", md: "flex" },
-                gap: 0.5,
+                gap: 1,
                 alignItems: "center",
               }}
             >
@@ -148,21 +165,23 @@ function AppAppBar() {
                 Sign up
               </Button>
             </Box>
+
             <Box sx={{ display: { sm: "", md: "none" } }}>
               <Button
                 variant="text"
                 color="primary"
                 aria-label="menu"
                 onClick={toggleDrawer(true)}
-                sx={{ minWidth: "30px", p: "4px" }}
+                sx={{ minWidth: "20px", p: "4px" }}
               >
                 <MenuIcon />
               </Button>
+
               <Drawer anchor="right" open={open} onClose={toggleDrawer(false)}>
                 <Box
                   sx={{
                     minWidth: "60dvw",
-                    p: 2,
+                    p: 1,
                     backgroundColor: "background.paper",
                     flexGrow: 1,
                   }}

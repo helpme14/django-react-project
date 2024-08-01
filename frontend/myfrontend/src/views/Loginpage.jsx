@@ -14,6 +14,7 @@ import Typography from "@mui/material/Typography";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import AuthContext from "../context/AuthContext"; // Import AuthContext
 import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { useContext, useEffect } from "react";
 
 const defaultTheme = createTheme();
 
@@ -21,6 +22,7 @@ export default function SignInSide() {
   const { loginUser } = React.useContext(AuthContext); // Get loginUser from context
   const [errors, setErrors] = React.useState({ email: "", password: "" });
   const navigate = useNavigate(); // Initialize useNavigate
+  const { user } = useContext(AuthContext);
 
   const validateEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -58,11 +60,18 @@ export default function SignInSide() {
     try {
       await loginUser(email, password); // Call loginUser from context
       navigate("/dashboard"); // Use navigate to redirect
+      
     } catch (error) {
       console.error("Login failed", error);
       setErrors({ ...errors, password: "An unexpected error occurred" });
     }
   };
+
+  useEffect(() => {
+    if (user) {
+      navigate("/dashboard"); // Redirect to dashboard if already logged in
+    }
+  }, [user, navigate]);
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -99,6 +108,7 @@ export default function SignInSide() {
             <Typography component="h1" variant="h5">
               Sign in
             </Typography>
+
             <Box
               component="form"
               noValidate
@@ -148,7 +158,7 @@ export default function SignInSide() {
                   </Link>
                 </Grid>
                 <Grid item>
-                  <Link href="/register" variant="body2">
+                  <Link href="/" variant="body2">
                     {"Don't have an account? Sign Up"}
                   </Link>
                 </Grid>

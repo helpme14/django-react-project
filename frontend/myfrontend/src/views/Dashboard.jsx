@@ -1,20 +1,31 @@
-import React from "react";
-import Button from "@mui/material/Button";
-import AuthContext from "../context/AuthContext"; // Import AuthContext
+import DashboardNavbar from "./DashboardNavbar";
+import Box from "@mui/material/Box";
+import DashboardImagesection from "./DashboardImagesection";
 
 function Dashboard() {
-  const { user, logoutUser } = React.useContext(AuthContext); // Access user and logoutUser from context
-
   return (
     <div>
-      <h1>Welcome, {user && user.username}!</h1> {/* Display the username */}
+      {/* <h1>Welcome, {user && user.username}!</h1>
       <Button
-        onClick={logoutUser} // Call logoutUser function on button click
+        onClick={logoutUser} 
         variant="contained"
         sx={{ mt: 3, mb: 2 }}
       >
         Logout
-      </Button>
+      </Button> */}
+      <DashboardNavbar />
+      <Box
+        sx={{
+          minHeight: "100vh", // Fullscreen height
+          backgroundColor: "#e0f7fa", // Another background color to differentiate sections
+          margin: 0,
+          padding: "50px",
+          scrollBehavior: "smooth",
+          // overflowX: "hidden",
+        }}
+      >
+        <DashboardImagesection />
+      </Box>
     </div>
   );
 }

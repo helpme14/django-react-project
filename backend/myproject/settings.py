@@ -25,7 +25,9 @@ SECRET_KEY = 'django-insecure-*_*(7-jzk(m!ilrtd5v-bzl4l^ojh6y9u+kp*vm37c!p0_-_m&
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+# settings.py
+ALLOWED_HOSTS = ['*']
+
 
 
 
@@ -44,8 +46,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'base',
     'authentication',
-    
-    
+    'django_extensions',
     
     
 ]
@@ -62,6 +63,7 @@ MIDDLEWARE = [
 ]
 CORS_ALLOWED_ORIGINS = [
    'http://localhost:5173',
+   'http://192.168.2.24:5173',
    
 ]
 
@@ -88,14 +90,24 @@ WSGI_APPLICATION = 'myproject.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
-
+#this is local
+# DATABASES = { 
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+#this is third party MYSQLWORKBENCH
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'djangoreact',
+        'USER': 'root',
+        'PASSWORD': 'test123456',
+        'HOST': 'localhost',  # Or the IP address of your MySQL server
+        'PORT': '3306',       # Default MySQL port
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
