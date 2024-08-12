@@ -1,5 +1,5 @@
 import { createContext, useState, useEffect, useCallback } from "react";
-import { jwtDecode } from "jwt-decode";
+import { jwtDecode } from "jwt-decode"; // Make sure to install this
 import { useNavigate, useLocation } from "react-router-dom";
 import swal from "sweetalert2";
 import PropTypes from "prop-types";
@@ -14,16 +14,14 @@ export const AuthProvider = ({ children }) => {
       ? JSON.parse(localStorage.getItem("authTokens"))
       : null
   );
-
   const [user, setUser] = useState(() =>
     localStorage.getItem("authTokens")
       ? jwtDecode(JSON.parse(localStorage.getItem("authTokens")).access)
       : null
   );
-
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-  const location = useLocation(); // Get the current route
+  const location = useLocation();
 
   const loginUser = async (email, password) => {
     const response = await fetch(
@@ -36,7 +34,6 @@ export const AuthProvider = ({ children }) => {
         body: JSON.stringify({ email, password }),
       }
     );
-
     const data = await response.json();
 
     if (response.status === 200) {
@@ -73,7 +70,7 @@ export const AuthProvider = ({ children }) => {
     setAuthTokens(null);
     setUser(null);
     localStorage.removeItem("authTokens");
-    
+
     const response = await fetch(
       "http://127.0.0.1:8000/authentication/register/",
       {
@@ -81,12 +78,7 @@ export const AuthProvider = ({ children }) => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          email,
-          username,
-          password,
-          password2,
-        }),
+        body: JSON.stringify({ email, username, password, password2 }),
       }
     );
     if (response.status === 201) {
@@ -129,15 +121,31 @@ export const AuthProvider = ({ children }) => {
     });
   }, [navigate]);
 
-  const contextData = {
-    user,
-    setUser,
-    authTokens,
-    setAuthTokens,
-    registerUser,
-    loginUser,
-    logoutUser,
+  const refreshToken = async () => {
+    try {
+      const response = await fetch("http://127.0.0.1:8000/api/token/refresh/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ refresh: authTokens?.refresh }),
+      });
+      const data = await response.json();
+
+      if (response.status === 200) {
+        setAuthTokens(data);
+        setUser(jwtDecode(data.access));
+        localStorage.setItem("authTokens", JSON.stringify(data));
+        return data.access;
+      } else {
+        logoutUser();
+      }
+    } catch (error) {
+      console.error("Error refreshing token:", error);
+      logoutUser();
+    }
   };
+  
 
   useEffect(() => {
     if (authTokens) {
@@ -147,28 +155,43 @@ export const AuthProvider = ({ children }) => {
   }, [authTokens]);
 
   useEffect(() => {
-    if (location.pathname === "/dashboard") {
-      const handleActivity = () => {
-        if (window.logoutTimer) {
-          clearTimeout(window.logoutTimer);
-        }
-        window.logoutTimer = setTimeout(logoutUser, 5 * 60 * 1000); // 5 minutes
-      };
+    let logoutTimer;
 
+    const handleActivity = () => {
+      if (logoutTimer) {
+        clearTimeout(logoutTimer);
+      }
+      logoutTimer = setTimeout(logoutUser, 5 * 60 * 1000); // 5 minutes
+    };
+
+    if (location.pathname === "/dashboard") {
       window.addEventListener("mousemove", handleActivity);
       window.addEventListener("keydown", handleActivity);
       window.addEventListener("click", handleActivity);
+
+      handleActivity(); // Start timer immediately
 
       return () => {
         window.removeEventListener("mousemove", handleActivity);
         window.removeEventListener("keydown", handleActivity);
         window.removeEventListener("click", handleActivity);
-        if (window.logoutTimer) {
-          clearTimeout(window.logoutTimer);
+        if (logoutTimer) {
+          clearTimeout(logoutTimer);
         }
       };
     }
-  }, [location.pathname, logoutUser]); // Depend on the current route
+  }, [location.pathname, logoutUser]);
+
+  const contextData = {
+    user,
+    setUser,
+    authTokens,
+    setAuthTokens,
+    refreshToken, // Ensure this function is included
+    loginUser,
+    logoutUser,
+    registerUser,
+  };
 
   return (
     <AuthContext.Provider value={contextData}>
@@ -177,7 +200,6 @@ export const AuthProvider = ({ children }) => {
   );
 };
 
-// Add PropTypes validation
 AuthProvider.propTypes = {
   children: PropTypes.node.isRequired,
 };

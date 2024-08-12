@@ -11,7 +11,9 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useNavigate } from "react-router-dom";
-import AuthContext from "../context/AuthContext"; // Import AuthContext
+import AuthContext from "../context/AuthContext";
+import { debounce } from "lodash";
+import { useCallback } from "react";
 
 function Copyright(props) {
   return (
@@ -31,13 +33,18 @@ function Copyright(props) {
   );
 }
 
-// TODO remove, this demo shouldn't need to reset the theme.
-
 const defaultTheme = createTheme();
 
 export default function RegisterSide() {
-  const { registerUser } = React.useContext(AuthContext); // Get registerUser from context
+  const { registerUser } = React.useContext(AuthContext);
   const navigate = useNavigate();
+  const [inputValues, setInputValues] = React.useState({
+    email: "",
+    username: "",
+    password: "",
+    confirmPassword: "",
+  });
+
   const [errors, setErrors] = React.useState({
     email: "",
     password: "",
@@ -50,18 +57,57 @@ export default function RegisterSide() {
   };
 
   const validatePassword = (password) => {
-    // Example: Minimum 8 characters, at least one letter and one number
     const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
     return passwordRegex.test(password);
   };
 
+  const debouncedValidate = useCallback(
+    debounce((name, value) => {
+      let emailError = errors.email;
+      let passwordError = errors.password;
+      let confirmPasswordError = errors.confirmPassword;
+
+      if (name === "email") {
+        emailError = validateEmail(value) ? "" : "Invalid email address";
+      }
+
+      if (name === "password") {
+        passwordError = validatePassword(value)
+          ? ""
+          : "Password must be at least 8 characters long and include at least one letter and one number";
+      }
+
+      if (name === "confirmPassword" || name === "password") {
+        confirmPasswordError =
+          value === inputValues.password || value === inputValues.confirmPassword
+            ? ""
+            : "Passwords do not match";
+      }
+
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        email: emailError,
+        password: passwordError,
+        confirmPassword: confirmPasswordError,
+      }));
+    }, 300),
+    [errors, inputValues]
+  );
+
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+
+    setInputValues((prevValues) => ({
+      ...prevValues,
+      [name]: value,
+    }));
+
+    debouncedValidate(name, value);
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    const email = data.get("email");
-    const username = data.get("username");
-    const password = data.get("password");
-    const confirmPassword = data.get("confirmpassword");
+    const { email, username, password, confirmPassword } = inputValues;
 
     let emailError = "";
     let passwordError = "";
@@ -89,17 +135,16 @@ export default function RegisterSide() {
       return;
     }
 
-    // If validation passes, proceed with form submission
-
     try {
-      await registerUser(email, username, password, confirmPassword); // Call loginUser from context
+      await registerUser(email, username, password, confirmPassword);
+      navigate("/login");
     } catch (error) {
-      console.error("Login failed", error);
-      setErrors({ ...errors, password: "An unexpected error occurred" });
+      console.error("Registration failed", error);
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        password: "An unexpected error occurred",
+      }));
     }
-
-    // Redirect to login page
-    navigate("/login");
   };
 
   return (
@@ -154,6 +199,8 @@ export default function RegisterSide() {
                 autoFocus
                 error={!!errors.email}
                 helperText={errors.email}
+                value={inputValues.email}
+                onChange={handleInputChange}
               />
               <TextField
                 margin="normal"
@@ -163,6 +210,8 @@ export default function RegisterSide() {
                 label="Username"
                 name="username"
                 autoComplete="username"
+                value={inputValues.username}
+                onChange={handleInputChange}
               />
               <TextField
                 margin="normal"
@@ -175,20 +224,23 @@ export default function RegisterSide() {
                 autoComplete="current-password"
                 error={!!errors.password}
                 helperText={errors.password}
+                value={inputValues.password}
+                onChange={handleInputChange}
               />
               <TextField
                 margin="normal"
                 required
                 fullWidth
-                name="confirmpassword"
+                name="confirmPassword"
                 label="Confirm Password"
                 type="password"
-                id="confirmpassword"
+                id="confirmPassword"
                 autoComplete="current-password"
                 error={!!errors.confirmPassword}
                 helperText={errors.confirmPassword}
+                value={inputValues.confirmPassword}
+                onChange={handleInputChange}
               />
-
               <Button
                 type="submit"
                 fullWidth

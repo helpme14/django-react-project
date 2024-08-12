@@ -1,5 +1,6 @@
 import * as React from "react";
 import { styled, alpha } from "@mui/material/styles";
+import { Link } from "react-router-dom";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -14,9 +15,12 @@ import SearchIcon from "@mui/icons-material/Search";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import MailIcon from "@mui/icons-material/Mail";
 import NotificationsIcon from "@mui/icons-material/Notifications";
-import MoreIcon from "@mui/icons-material/MoreVert";
-import AuthContext from "../context/AuthContext"; // Import AuthContext
+import AuthContext from "../context/AuthContext";
 import Button from "@mui/material/Button";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import LogoutIcon from "@mui/icons-material/Logout";
+import { useContext, useEffect, useState } from "react";
+import { getCart } from "../context/CartApi";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -48,7 +52,6 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   color: "inherit",
   "& .MuiInputBase-input": {
     padding: theme.spacing(1, 1, 1, 0),
-    // vertical padding + font size from searchIcon
     paddingLeft: `calc(1em + ${theme.spacing(4)})`,
     transition: theme.transitions.create("width"),
     width: "100%",
@@ -61,15 +64,40 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 export default function PrimarySearchAppBar() {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
-  const { user, logoutUser } = React.useContext(AuthContext); // Access user and logoutUser from context
-  const isMenuOpen = Boolean(anchorEl);
-  const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+  const { user, logoutUser, authTokens, refreshToken, setAuthTokens } =
+    useContext(AuthContext);
+  const [cartItems, setCartItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  //   const handleProfileMenuOpen = (event) => {
-  //     setAnchorEl(event.currentTarget);
-  //   };
+  useEffect(() => {
+    const fetchCart = async () => {
+      try {
+        const data = await getCart(authTokens, refreshToken, setAuthTokens);
+        if (Array.isArray(data) && data.length > 0) {
+          const cartData = data[0];
+          setCartItems(cartData.items || []);
+        } else {
+          setCartItems([]);
+        }
+      } catch (error) {
+        setError("Failed to fetch cart items.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCart();
+  }, [authTokens, refreshToken, setAuthTokens]);
+
+  // useEffect(() => {
+  //   // console.log("Cart items updated:", cartItems);
+  // }, [cartItems]);
+
+  // if (loading) return <p>Loading...</p>;
+  // if (error) return <p>{error}</p>;
+
   const handleProfileMenuOpen = (event) => {
-    // Check if the element is part of the document layout
     if (event.currentTarget) {
       setAnchorEl(event.currentTarget);
     }
@@ -84,12 +112,7 @@ export default function PrimarySearchAppBar() {
     handleMobileMenuClose();
   };
 
-  //   const handleMobileMenuOpen = (event) => {
-  //     setMobileMoreAnchorEl(event.currentTarget);
-  //   };
-
   const handleMobileMenuOpen = (event) => {
-    // Check if the element is part of the document layout
     if (event.currentTarget) {
       setMobileMoreAnchorEl(event.currentTarget);
     }
@@ -109,7 +132,7 @@ export default function PrimarySearchAppBar() {
         vertical: "top",
         horizontal: "right",
       }}
-      open={isMenuOpen}
+      open={Boolean(anchorEl)}
       onClose={handleMenuClose}
     >
       <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
@@ -132,9 +155,33 @@ export default function PrimarySearchAppBar() {
         vertical: "top",
         horizontal: "right",
       }}
-      open={isMobileMenuOpen}
+      open={Boolean(mobileMoreAnchorEl)}
       onClose={handleMobileMenuClose}
     >
+      <MenuItem onClick={handleProfileMenuOpen}>
+        <IconButton
+          size="large"
+          aria-label="account of current user"
+          aria-controls={menuId}
+          aria-haspopup="true"
+          color="inherit"
+        >
+          <Badge badgeContent={1} color="error">
+            <AccountCircle />
+          </Badge>
+        </IconButton>
+        <p>Profile</p>
+      </MenuItem>
+
+      <MenuItem component={Link} to="/dashboard/cart">
+        <IconButton size="large" aria-label="cart" color="inherit">
+          <Badge badgeContent={cartItems.length} color="error">
+            <ShoppingCartIcon />
+          </Badge>
+        </IconButton>
+        <p>Cart</p>
+      </MenuItem>
+
       <MenuItem>
         <IconButton size="large" aria-label="show 4 new mails" color="inherit">
           <Badge badgeContent={41} color="error">
@@ -155,17 +202,14 @@ export default function PrimarySearchAppBar() {
         </IconButton>
         <p>Notifications</p>
       </MenuItem>
-      <MenuItem onClick={handleProfileMenuOpen}>
-        <IconButton
-          size="large"
-          aria-label="account of current user"
-          aria-controls="primary-search-account-menu"
-          aria-haspopup="true"
-          color="inherit"
-        >
-          <AccountCircle />
+
+      <MenuItem onClick={logoutUser}>
+        <IconButton size="large" aria-label="logout" color="inherit">
+          <Badge color="error">
+            <LogoutIcon />
+          </Badge>
         </IconButton>
-        <p>Profile</p>
+        <p>Logout</p>
       </MenuItem>
     </Menu>
   );
@@ -180,9 +224,7 @@ export default function PrimarySearchAppBar() {
             color="inherit"
             aria-label="open drawer"
             sx={{ mr: 2 }}
-          >
-            <MenuIcon />
-          </IconButton>
+          ></IconButton>
           <Typography
             variant="h6"
             noWrap
@@ -201,13 +243,26 @@ export default function PrimarySearchAppBar() {
             />
           </Search>
           <Box sx={{ flexGrow: 1 }} />
+
           <Box sx={{ display: { xs: "none", md: "flex" } }}>
+            <IconButton
+              size="large"
+              aria-label="cart"
+              color="inherit"
+              component={Link}
+              to="/dashboard/cart"
+            >
+              <Badge badgeContent={cartItems.length} color="error">
+                <ShoppingCartIcon />
+              </Badge>
+            </IconButton>
+
             <IconButton
               size="large"
               aria-label="show 4 new mails"
               color="inherit"
             >
-              <Badge badgeContent={41} color="error">
+              <Badge badgeContent={4} color="error">
                 <MailIcon />
               </Badge>
             </IconButton>
@@ -235,6 +290,7 @@ export default function PrimarySearchAppBar() {
               Logout
             </Button>
           </Box>
+
           <Box sx={{ display: { xs: "flex", md: "none" } }}>
             <IconButton
               size="large"
@@ -244,7 +300,7 @@ export default function PrimarySearchAppBar() {
               onClick={handleMobileMenuOpen}
               color="inherit"
             >
-              <MoreIcon />
+              <MenuIcon />
             </IconButton>
           </Box>
         </Toolbar>

@@ -12,16 +12,21 @@ import Grid from "@mui/material/Grid";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import AuthContext from "../context/AuthContext"; // Import AuthContext
-import { useNavigate } from "react-router-dom"; // Import useNavigate
-import { useContext, useEffect } from "react";
+import AuthContext from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
+import { useContext, useEffect, useCallback } from "react";
+import { debounce } from "lodash";
 
 const defaultTheme = createTheme();
 
 export default function SignInSide() {
-  const { loginUser } = React.useContext(AuthContext); // Get loginUser from context
+  const { loginUser } = React.useContext(AuthContext);
   const [errors, setErrors] = React.useState({ email: "", password: "" });
-  const navigate = useNavigate(); // Initialize useNavigate
+  const [inputValues, setInputValues] = React.useState({
+    email: "",
+    password: "",
+  });
+  const navigate = useNavigate();
   const { user } = useContext(AuthContext);
 
   const validateEmail = (email) => {
@@ -30,16 +35,51 @@ export default function SignInSide() {
   };
 
   const validatePassword = (password) => {
-    // Example: Minimum 8 characters, at least one letter and one number
     const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
     return passwordRegex.test(password);
   };
 
+  // Debounced validation function
+  const debouncedValidate = useCallback(
+    debounce((name, value) => {
+      let emailError = errors.email;
+      let passwordError = errors.password;
+
+      if (name === "email") {
+        emailError = validateEmail(value) ? "" : "Invalid email address";
+      }
+
+      if (name === "password") {
+        passwordError = validatePassword(value)
+          ? ""
+          : "Password must be at least 8 characters long and include at least one letter and one number";
+      }
+
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        email: emailError,
+        password: passwordError,
+      }));
+    }, 300),
+    [errors]
+  );
+
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+
+    setInputValues((prevValues) => ({
+      ...prevValues,
+      [name]: value,
+    }));
+
+    // Call the debounced validation function
+    debouncedValidate(name, value);
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    const email = data.get("email");
-    const password = data.get("password");
+    const { email, password } = inputValues;
+
     let emailError = "";
     let passwordError = "";
 
@@ -58,9 +98,8 @@ export default function SignInSide() {
     }
 
     try {
-      await loginUser(email, password); // Call loginUser from context
-      navigate("/dashboard"); // Use navigate to redirect
-      
+      await loginUser(email, password);
+      navigate("/dashboard");
     } catch (error) {
       console.error("Login failed", error);
       setErrors({ ...errors, password: "An unexpected error occurred" });
@@ -69,7 +108,7 @@ export default function SignInSide() {
 
   useEffect(() => {
     if (user) {
-      navigate("/dashboard"); // Redirect to dashboard if already logged in
+      navigate("/dashboard");
     }
   }, [user, navigate]);
 
@@ -108,7 +147,6 @@ export default function SignInSide() {
             <Typography component="h1" variant="h5">
               Sign in
             </Typography>
-
             <Box
               component="form"
               noValidate
@@ -126,6 +164,8 @@ export default function SignInSide() {
                 error={!!errors.email}
                 helperText={errors.email}
                 autoFocus
+                value={inputValues.email}
+                onChange={handleInputChange}
               />
               <TextField
                 margin="normal"
@@ -138,6 +178,8 @@ export default function SignInSide() {
                 autoComplete="current-password"
                 error={!!errors.password}
                 helperText={errors.password}
+                value={inputValues.password}
+                onChange={handleInputChange}
               />
               <FormControlLabel
                 control={<Checkbox value="remember" color="primary" />}

@@ -16,6 +16,7 @@ import Loginpage from "./views/Loginpage";
 import Registerpage from "./views/Registerpage";
 import AuthContext from "./context/AuthContext";
 import { useContext } from "react";
+import DashboardItems from "./views/CartUser";
 
 function App() {
   return (
@@ -50,6 +51,14 @@ function AppContent() {
           element={
             <PrivateRoute>
               <Dashboard />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/dashboard/cart"
+          element={
+            <PrivateRoute>
+              <DashboardItems />
             </PrivateRoute>
           }
         />

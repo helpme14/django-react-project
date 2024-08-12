@@ -1,8 +1,33 @@
 import DashboardNavbar from "./DashboardNavbar";
 import Box from "@mui/material/Box";
 import DashboardImagesection from "./DashboardImagesection";
+import DashboardAddItems from "./DashboardAddItem";
+// import { useEffect } from "react";
+
+// import { getCart } from "../context/CartApi";
+// import { useContext} from "react";
+// import AuthContext from "../context/AuthContext";
 
 function Dashboard() {
+  // const [cartItems, setCartItems] = useState([]);
+  // const { authTokens, refreshToken } = useContext(AuthContext);
+
+  // Use useCallback to memoize fetchCart
+  // const fetchCart = useCallback(async () => {
+  //   try {
+  //     const data = await getCart(authTokens, refreshToken);
+  //     if (Array.isArray(data)) {
+  //       setCartItems(data[0]?.items || []);
+  //     }
+  //   } catch (error) {
+  //     console.error("Failed to fetch cart items:", error);
+  //   }
+  // }, [authTokens, refreshToken]);
+
+  // useEffect(() => {
+  //   fetchCart();
+  // }, [fetchCart]);
+
   return (
     <div>
       {/* <h1>Welcome, {user && user.username}!</h1>
@@ -25,6 +50,7 @@ function Dashboard() {
         }}
       >
         <DashboardImagesection />
+        <DashboardAddItems />
       </Box>
     </div>
   );
