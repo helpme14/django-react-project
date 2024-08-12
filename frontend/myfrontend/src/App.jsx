@@ -18,11 +18,15 @@ import AuthContext from "./context/AuthContext";
 import { useContext } from "react";
 import DashboardItems from "./views/CartUser";
 
+// import { CartProvider } from "./context/cartContext";
+
 function App() {
   return (
     <Router>
       <AuthProvider>
+        {/* <CartProvider> */}
         <AppContent />
+        {/* </CartProvider> */}
       </AuthProvider>
     </Router>
   );

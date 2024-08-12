@@ -4,6 +4,7 @@ import { addItemToCart } from "../context/CartApi";
 
 const DashboardAddItem = () => {
   const { authTokens, refreshToken, user } = useContext(AuthContext);
+
   const [itemId, setItemId] = useState("");
   const [quantity, setQuantity] = useState("");
 
@@ -46,6 +47,7 @@ const DashboardAddItem = () => {
         onChange={(e) => setQuantity(e.target.value)}
       />
       <button onClick={handleAddItem}>Add to Cart</button>
+      {/* <p>{newCartItems}</p> */}
     </div>
   );
 };

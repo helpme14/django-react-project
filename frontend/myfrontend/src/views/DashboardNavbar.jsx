@@ -21,6 +21,7 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { useContext, useEffect, useState } from "react";
 import { getCart } from "../context/CartApi";
+// import { useCart } from "../context/cartContext";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -69,6 +70,9 @@ export default function PrimarySearchAppBar() {
   const [cartItems, setCartItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  // const [cartLenght, setCartLenght] = useState(0);
+
+  // const { cartItems1 } = useCart();
 
   useEffect(() => {
     const fetchCart = async () => {
@@ -77,8 +81,10 @@ export default function PrimarySearchAppBar() {
         if (Array.isArray(data) && data.length > 0) {
           const cartData = data[0];
           setCartItems(cartData.items || []);
+          // setCartLenght(cartItems.items.length || 0);
         } else {
           setCartItems([]);
+          // setCartLenght(0);
         }
       } catch (error) {
         setError("Failed to fetch cart items.");

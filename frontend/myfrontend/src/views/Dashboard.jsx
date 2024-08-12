@@ -50,7 +50,7 @@ function Dashboard() {
         }}
       >
         <DashboardImagesection />
-        <DashboardAddItems />
+        {/* <DashboardAddItems /sl> */}
       </Box>
     </div>
   );

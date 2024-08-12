@@ -81,3 +81,37 @@ export const addItemToCart = async (
     throw error;
   }
 };
+// export const addItemToCart = async (
+//   itemId,
+//   quantity,
+//   authTokens,
+//   refreshToken,
+//   user
+// ) => {
+//   if (!user || !authTokens) {
+//     console.error("User is not authenticated");
+//     return;
+//   }
+
+//   try {
+//     const headers = await getAuthHeaders(authTokens, refreshToken);
+//     const payload = { product_id: itemId, quantity: quantity };
+
+//     const response = await axios.post(`${API_URL}add-item/`, payload, {
+//       headers: {
+//         "Content-Type": "application/json",
+//         ...headers,
+//       },
+//     });
+
+//     if (response.status === 201 || response.status === 200) {
+//       console.log("Item added to cart:", response.data);
+//       return response.data.cart; // Ensure your API returns the updated cart
+//     } else {
+//       console.error("Failed to add item to cart:", response.data);
+//     }
+//   } catch (error) {
+//     console.error("Error adding item to cart:", error);
+//     throw error;
+//   }
+// };
