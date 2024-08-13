@@ -1,7 +1,7 @@
 import DashboardNavbar from "./DashboardNavbar";
 import Box from "@mui/material/Box";
 import DashboardImagesection from "./DashboardImagesection";
-import DashboardAddItems from "./DashboardAddItem";
+
 // import { useEffect } from "react";
 
 // import { getCart } from "../context/CartApi";
@@ -50,7 +50,6 @@ function Dashboard() {
         }}
       >
         <DashboardImagesection />
-        {/* <DashboardAddItems /sl> */}
       </Box>
     </div>
   );
