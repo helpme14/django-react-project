@@ -2,12 +2,6 @@ import DashboardNavbar from "./DashboardNavbar";
 import Box from "@mui/material/Box";
 import DashboardImagesection from "./DashboardImagesection";
 
-// import { useEffect } from "react";
-
-// import { getCart } from "../context/CartApi";
-// import { useContext} from "react";
-// import AuthContext from "../context/AuthContext";
-
 function Dashboard() {
   // const [cartItems, setCartItems] = useState([]);
   // const { authTokens, refreshToken } = useContext(AuthContext);
