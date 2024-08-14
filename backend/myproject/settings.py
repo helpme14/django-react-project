@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/5.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
-
+import environ
 from pathlib import Path
 from datetime import timedelta
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -17,9 +17,15 @@ import os
 from decouple import config
 
 
+# Initialize environment variables
+env = environ.Env()
+env_file_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), '.env')
+environ.Env.read_env(env_file_path)  # Read the .env file from the specified path
+
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+
 
 
 # Quick-start development settings - unsuitable for production
@@ -69,6 +75,7 @@ MIDDLEWARE = [
 CORS_ALLOWED_ORIGINS = [
    'http://localhost:5173',
    'http://192.168.2.24:5173',
+   'http://localhost:5432'
    
 ]
 
@@ -103,14 +110,24 @@ WSGI_APPLICATION = 'myproject.wsgi.application'
 #     }
 # }
 #this is third party MYSQLWORKBENCH
+
+# Debug output to check environment variables
+print("DB_NAME:", env('DB_NAME'))
+print("DB_USER:", env('DB_USER'))
+print("DB_PASSWORD:", env('DB_PASSWORD'))
+print("DB_HOST:", env('DB_HOST'))
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': config('DB_NAME'),
-        'USER': config('DB_USER'),
-        'PASSWORD': config('DB_PASSWORD'),
-        'HOST': config('DB_HOST'),
-        'PORT': config('DB_PORT'),
+        'NAME': env('DB_NAME'),
+        'USER': env('DB_USER'),
+        'PASSWORD': env('DB_PASSWORD'),
+        'HOST': env('DB_HOST'),
+        'PORT': '5432',
+        'OPTIONS': {
+            'sslmode': 'require',
+        },
     }
 }
 
@@ -148,9 +165,12 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-
+# Ensure this directory contains your static files
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
@@ -199,3 +219,18 @@ AUTH_USER_MODEL = 'authentication.User'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+
+# Ensure Jazzmin's static files are correctly served
+JAZZMIN_SETTINGS = {
+    # Add other Jazzmin settings here if needed
+    'site_title': 'My Admin',
+    'site_header': 'My Site Admin',
+    'site_brand': 'My Site',
+    'site_logo': 'admin/img/logo.png',
+    'welcome_sign': 'Welcome to My Admin',
+    'copyright': 'My Company',
+    'show_sidebar': True,
+    'show_navigation': True,
+    'show_ui_builder': True,
+}
