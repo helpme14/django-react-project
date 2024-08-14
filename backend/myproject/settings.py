@@ -35,7 +35,8 @@ SECRET_KEY = config('SECRET_KEY', default='your-default-secret-key')
 DEBUG = config('DEBUG', default=False, cast=bool)
 
 # settings.py
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['my-django-react.onrender.com',
+    'www.my-django-react.onrender.com',]
 
 
 
