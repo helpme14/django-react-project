@@ -35,8 +35,8 @@ SECRET_KEY = config('SECRET_KEY', default='your-default-secret-key')
 DEBUG = config('DEBUG', default=False, cast=bool)
 
 # settings.py
-ALLOWED_HOSTS = ['my-django-react.onrender.com',
-    'www.my-django-react.onrender.com',]
+ALLOWED_HOSTS = ['my-django-react.onrender.com']
+    
 
 
 
@@ -234,4 +234,22 @@ JAZZMIN_SETTINGS = {
     'show_sidebar': True,
     'show_navigation': True,
     'show_ui_builder': True,
+}
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    },
 }

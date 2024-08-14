@@ -18,27 +18,14 @@ class RegisterView(generics.CreateAPIView):
     permission_classes = (AllowAny,)
     serializer_class  = RegisterSerializer
 
-# @api_view(['GET','POST'])
-# @permission_classes([IsAuthenticated])
 
-# def DashboardView(request):
-#     if request.method == "GET":
-#         context = f"HEY {request.user}, YOu are seeing a GET respibse"
-#         return Response({'response':context}, status=status.HTTP_200_OK)
-#     elif request.method == "POST":
-#         text = request.POST.get("text")
-#         context= f"HEY {request.user}, your text is {text}"
-#         return Response({'response':context}, status=status.HTTP_200_OK)
-    
-#     return Response({}, status=status.HTTP_400_BAD_REQUEST)
-# Get All Routes
 
 @api_view(['GET'])
 def getRoutes(request):
     routes = [
-        '/api/token/',
-        '/api/register/',
-        '/api/token/refresh/'
+        '/authentication/token/',
+        '/authentication/register/',
+        '/authentication/token/refresh/'
     ]
     return Response(routes)
 
@@ -46,7 +33,7 @@ def getRoutes(request):
 @permission_classes([IsAuthenticated])
 def testEndPoint(request):
     if request.method == 'GET':
-        data = f"Congrats {request.user}, your API just responded to GET reqyest"
+        data = f"Congrats {request.user}, your API just responded to GET request"
         return Response({'response':data}, status = status.HTTP_200_OK)
     
     elif request.method == 'POST':
