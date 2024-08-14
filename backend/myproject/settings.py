@@ -76,17 +76,17 @@ WSGI_APPLICATION = 'myproject.wsgi.application'
 
 
 
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'djangoreact',
-        'USER': 'gio',
-        'PASSWORD': 'zMvzVHVR2lOPghIFVQK7xq31HAlOXgNP',
-        'HOST': '35.227.164.209',
-        'PORT': '5432',  # Default PostgreSQL port
+        'NAME': os.environ.get('DB_NAME'),
+        'USER': os.environ.get('DB_USER'),
+        'PASSWORD': os.environ.get('DB_PASSWORD'),
+        'HOST': os.environ.get('DB_HOST'),
+        'PORT': os.environ.get('DB_PORT', '5432'),  # Default to 5432 if DB_PORT is not set
     }
 }
+
 
 
 # Password validation
