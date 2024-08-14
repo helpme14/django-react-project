@@ -14,6 +14,11 @@ from pathlib import Path
 from datetime import timedelta
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 import os
+from decouple import config
+
+
+
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
@@ -103,12 +108,12 @@ WSGI_APPLICATION = 'myproject.wsgi.application'
 #this is third party MYSQLWORKBENCH
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'djangoreact',
-        'USER': 'root',
-        'PASSWORD': 'test123456',
-        'HOST': 'localhost',  # Or the IP address of your MySQL server
-        'PORT': '3306',       # Default MySQL port
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': config('DB_NAME'),
+        'USER': config('DB_USER'),
+        'PASSWORD': config('DB_PASSWORD'),
+        'HOST': config('DB_HOST'),
+        'PORT': config('DB_PORT'),
     }
 }
 
