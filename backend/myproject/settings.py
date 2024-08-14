@@ -98,7 +98,7 @@ DATABASES = {
         'NAME': 'djangoreact',
         'USER': 'gio',
         'PASSWORD': 'zMvzVHVR2lOPghIFVQK7xq31HAlOXgNP',
-        'HOST': 'dpg-cqu05i08fa8c73celtpg-a.oregon-postgres.render.com',
+        'HOST': '35.227.164.209',
         'PORT': '5432',  # Default PostgreSQL port
     }
 }
