@@ -2,7 +2,7 @@ import os
 from pathlib import Path
 from datetime import timedelta
 import environ
-import dj_database_url
+# import dj_database_url
 from decouple import config
 
 # Initialize environment variables
@@ -75,20 +75,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'myproject.wsgi.application'
 
-# Database
-# DATABASES = {
-#     'default': dj_database_url.parse(env('DATABASE_URL'), conn_max_age=600, ssl_require=True)
-# }
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': config('DB_NAME'),  # Ensure this matches your database name
-#         'USER': config('DB_USER'),  # Ensure this matches your database user
-#         'PASSWORD': config('DB_PASSWORD'),  # Ensure this matches your database password
-#         'HOST': config('DB_HOST'),  # Ensure this matches your database host
-#         'PORT': config('DB_PORT', default='5432'),  # Ensure this matches your database port
-#     }
-# }
 
 
 
