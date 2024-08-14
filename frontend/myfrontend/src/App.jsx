@@ -17,17 +17,30 @@ import Registerpage from "./views/Registerpage";
 import AuthContext from "./context/AuthContext";
 import { useContext } from "react";
 import DashboardItems from "./views/CartUser";
-
-// import { CartProvider } from "./context/cartContext";
+import ProfilePage from "./views/ProfilePage";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: "#1976d2",
+    },
+    secondary: {
+      main: "#dc004e",
+    },
+  },
+  typography: {
+    fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
+  },
+});
 
 function App() {
   return (
     <Router>
-      <AuthProvider>
-        {/* <CartProvider> */}
-        <AppContent />
-        {/* </CartProvider> */}
-      </AuthProvider>
+      <ThemeProvider theme={theme}>
+        <AuthProvider>
+          <AppContent />
+        </AuthProvider>
+      </ThemeProvider>
     </Router>
   );
 }
@@ -63,6 +76,14 @@ function AppContent() {
           element={
             <PrivateRoute>
               <DashboardItems />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/dashboard/profile"
+          element={
+            <PrivateRoute>
+              <ProfilePage />
             </PrivateRoute>
           }
         />

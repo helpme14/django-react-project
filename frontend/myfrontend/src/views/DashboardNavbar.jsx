@@ -13,7 +13,7 @@ import Menu from "@mui/material/Menu";
 import MenuIcon from "@mui/icons-material/Menu";
 import SearchIcon from "@mui/icons-material/Search";
 import AccountCircle from "@mui/icons-material/AccountCircle";
-import MailIcon from "@mui/icons-material/Mail";
+
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import AuthContext from "../context/AuthContext";
 import Button from "@mui/material/Button";
@@ -70,6 +70,7 @@ export default function PrimarySearchAppBar() {
   const [cartItems, setCartItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
   // const [cartLenght, setCartLenght] = useState(0);
 
   // const { cartItems1 } = useCart();
@@ -125,26 +126,26 @@ export default function PrimarySearchAppBar() {
   };
 
   const menuId = "primary-search-account-menu";
-  const renderMenu = (
-    <Menu
-      anchorEl={anchorEl}
-      anchorOrigin={{
-        vertical: "top",
-        horizontal: "right",
-      }}
-      id={menuId}
-      keepMounted
-      transformOrigin={{
-        vertical: "top",
-        horizontal: "right",
-      }}
-      open={Boolean(anchorEl)}
-      onClose={handleMenuClose}
-    >
-      <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-      <MenuItem onClick={handleMenuClose}>My account</MenuItem>
-    </Menu>
-  );
+  // const renderMenu = (
+  //   <Menu
+  //     anchorEl={anchorEl}
+  //     anchorOrigin={{
+  //       vertical: "top",
+  //       horizontal: "right",
+  //     }}
+  //     id={menuId}
+  //     keepMounted
+  //     transformOrigin={{
+  //       vertical: "top",
+  //       horizontal: "right",
+  //     }}
+  //     open={Boolean(anchorEl)}
+  //     onClose={handleMenuClose}
+  //   >
+  //     <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
+  //     <MenuItem onClick={handleMenuClose}>My account</MenuItem>
+  //   </Menu>
+  // );
 
   const mobileMenuId = "primary-search-account-menu-mobile";
   const renderMobileMenu = (
@@ -164,12 +165,14 @@ export default function PrimarySearchAppBar() {
       open={Boolean(mobileMoreAnchorEl)}
       onClose={handleMobileMenuClose}
     >
-      <MenuItem onClick={handleProfileMenuOpen}>
+      <MenuItem
+        onClick={handleProfileMenuOpen}
+        component={Link}
+        to="/dashboard/profile"
+      >
         <IconButton
           size="large"
           aria-label="account of current user"
-          aria-controls={menuId}
-          aria-haspopup="true"
           color="inherit"
         >
           <Badge badgeContent={1} color="error">
@@ -188,14 +191,6 @@ export default function PrimarySearchAppBar() {
         <p>Cart</p>
       </MenuItem>
 
-      <MenuItem>
-        <IconButton size="large" aria-label="show 4 new mails" color="inherit">
-          <Badge badgeContent={41} color="error">
-            <MailIcon />
-          </Badge>
-        </IconButton>
-        <p>Messages</p>
-      </MenuItem>
       <MenuItem>
         <IconButton
           size="large"
@@ -265,15 +260,6 @@ export default function PrimarySearchAppBar() {
 
             <IconButton
               size="large"
-              aria-label="show 4 new mails"
-              color="inherit"
-            >
-              <Badge badgeContent={4} color="error">
-                <MailIcon />
-              </Badge>
-            </IconButton>
-            <IconButton
-              size="large"
               aria-label="show 17 new notifications"
               color="inherit"
             >
@@ -281,17 +267,18 @@ export default function PrimarySearchAppBar() {
                 <NotificationsIcon />
               </Badge>
             </IconButton>
+
             <IconButton
               size="large"
               edge="end"
               aria-label="account of current user"
-              aria-controls={menuId}
-              aria-haspopup="true"
-              onClick={handleProfileMenuOpen}
               color="inherit"
+              component={Link}
+              to="/dashboard/profile"
             >
               <AccountCircle />
             </IconButton>
+
             <Button onClick={logoutUser} variant="">
               Logout
             </Button>
@@ -312,7 +299,7 @@ export default function PrimarySearchAppBar() {
         </Toolbar>
       </AppBar>
       {renderMobileMenu}
-      {renderMenu}
+      {/* {renderMenu} */}
     </Box>
   );
 }

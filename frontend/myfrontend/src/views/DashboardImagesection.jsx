@@ -51,20 +51,27 @@ function DashboardImagesection() {
     }
 
     try {
-      await addItemToCart(
-        product.id,
-        cartQuantities[product.id] || 0,
-        authTokens,
-        refreshToken,
-        user
-      );
+      const quantity = cartQuantities[product.id] || 0;
+
+      // Check if quantity is 0
+      if (quantity === 0) {
+        swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Quantity must not be 0. Please select a valid quantity.",
+        });
+        return; // Exit the function early if quantity is 0
+      }
+
+      // Proceed to add the item to the cart
+      await addItemToCart(product.id, quantity, authTokens, refreshToken, user);
+
       swal.fire({
         icon: "success",
         title: "Added to cart",
-        text: `${cartQuantities[product.id] || 0} ${
-          product.name
-        } added to cart`,
+        text: `${quantity} ${product.name} added to cart`,
       });
+      setCartQuantities(0);
     } catch (error) {
       console.error("Error adding item to cart:", error);
       swal.fire({
@@ -133,7 +140,17 @@ function DashboardImagesection() {
                   variant="contained"
                   size="small"
                   onClick={() => handleQuantityChange(product.id, -1)}
-                  sx={{ marginRight: "5px" }}
+                  sx={{
+                    marginRight: "15px",
+                    // backgroundColor: "deepskyblue",
+                    "&:hover": {
+                      backgroundColor: "skyblue", // Change color on hover
+                    },
+                    "&:active": {
+                      backgroundColor: "dodgerblue", // Change color on click
+                    },
+                  }}
+                  // backgroundColor="skyblue"
                 >
                   -
                 </Button>
@@ -144,7 +161,15 @@ function DashboardImagesection() {
                   variant="contained"
                   size="small"
                   onClick={() => handleQuantityChange(product.id, 1)}
-                  sx={{ marginLeft: "5px" }}
+                  sx={{
+                    marginLeft: "15px",
+                    "&:hover": {
+                      backgroundColor: "skyblue", // Change color on hover
+                    },
+                    "&:active": {
+                      backgroundColor: "dodgerblue", // Change color on click
+                    },
+                  }}
                 >
                   +
                 </Button>
@@ -152,7 +177,15 @@ function DashboardImagesection() {
               <Button
                 variant="contained"
                 onClick={() => handleAddToCart(product)}
-                sx={{ margin: "20px" }}
+                sx={{
+                  margin: "20px",
+                  "&:hover": {
+                    backgroundColor: "skyblue", // Change color on hover
+                  },
+                  "&:active": {
+                    backgroundColor: "dodgerblue", // Change color on click
+                  },
+                }}
               >
                 Add to Cart
               </Button>

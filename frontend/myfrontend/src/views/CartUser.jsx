@@ -1,8 +1,46 @@
 import { useContext, useEffect, useState } from "react";
 import AuthContext from "../context/AuthContext"; // Adjust the import path as needed
 import { getCart } from "../context/CartApi"; // Adjust the import path as needed
+import {
+  Card,
+  CardContent,
+  Typography,
+  Avatar,
+  Box,
+  Button,
+} from "@mui/material";
+import { makeStyles } from "@mui/styles";
+import { Link } from "react-router-dom";
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    maxWidth: 600,
+    margin: "auto",
+    marginTop: theme.spacing(4),
+    padding: theme.spacing(2),
+    textAlign: "center",
+  },
+  avatar: {
+    width: 120,
+    height: 120,
+    margin: "auto",
+    border: "3px solid #0288d1",
+  },
+  details: {
+    marginTop: theme.spacing(2),
+  },
+  button: {
+    marginTop: theme.spacing(2),
+    backgroundColor: "#0288d1",
+    color: "#fff",
+    "&:hover": {
+      backgroundColor: "#0277bd",
+    },
+  },
+}));
 
 const CartUser = () => {
+  const classes = useStyles();
   const { authTokens, refreshToken, setAuthTokens } = useContext(AuthContext);
   const [cartItems, setCartItems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -37,21 +75,58 @@ const CartUser = () => {
 
   return (
     <div>
-      <h1>My Cart</h1>
-      {cartItems.length === 0 ? (
-        <p>Your cart is empty.</p>
-      ) : (
-        <ul>
-          {cartItems.map((item) => (
-            <li key={item.id}>
-              Product: {item.product_name} - Quantity: {item.quantity} - Price:{" "}
-              {item.price}
-              <br />
-              Total : {item.quantity * item.price}
-            </li>
-          ))}
-        </ul>
-      )}
+      <Card className={classes.root}>
+        <CardContent>
+          <Typography variant="h4" component="div" gutterBottom>
+            My Cart
+          </Typography>
+
+          <Avatar
+            // alt={user.username}
+            // src={user.profilePicture}
+            className={classes.avatar}
+          />
+
+          <Typography variant="h5" gutterBottom>
+            Username
+          </Typography>
+          <Typography variant="body1" color="textSecondary">
+            email
+          </Typography>
+          <Box className={classes.details}>
+            <Typography variant="body2" color="textSecondary">
+              Full name
+            </Typography>
+            <Typography variant="body2" color="textSecondary">
+              Orders Placed: {cartItems.length}
+            </Typography>
+            {/* <Typography variant="body2" color="textSecondary">
+            Preferred Payment Method: {user.preferredPayment}
+          </Typography> */}
+
+            {cartItems.length === 0 ? (
+              <p>Your cart is empty.</p>
+            ) : (
+              <Box
+                component="ul"
+                sx={{ listStyle: "none", padding: 0, margin: 0 }}
+              >
+                {cartItems.map((item) => (
+                  <li key={item.id}>
+                    Product: {item.product_name} - Quantity: {item.quantity} -
+                    Price: {item.price}
+                    <br />
+                    Total : {item.quantity * item.price}
+                  </li>
+                ))}
+              </Box>
+            )}
+          </Box>
+          <Button className={classes.button} component={Link} to="/dashboard">
+            Back
+          </Button>
+        </CardContent>
+      </Card>
     </div>
   );
 };
