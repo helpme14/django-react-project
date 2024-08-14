@@ -16,6 +16,7 @@ from datetime import timedelta
 import os
 from decouple import config
 
+import dj_database_url
 
 # Initialize environment variables
 env = environ.Env()
@@ -113,23 +114,24 @@ WSGI_APPLICATION = 'myproject.wsgi.application'
 #this is third party MYSQLWORKBENCH
 
 # Debug output to check environment variables
-print("DB_NAME:", env('DB_NAME'))
-print("DB_USER:", env('DB_USER'))
-print("DB_PASSWORD:", env('DB_PASSWORD'))
-print("DB_HOST:", env('DB_HOST'))
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': env('DB_NAME'),
+#         'USER': env('DB_USER'),
+#         'PASSWORD': env('DB_PASSWORD'),
+#         'HOST': env('DB_HOST'),
+#         'PORT': '5432',
+#         'OPTIONS': {
+#             'sslmode': 'require',
+#         },
+#     }
+# }
+
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': env('DB_NAME'),
-        'USER': env('DB_USER'),
-        'PASSWORD': env('DB_PASSWORD'),
-        'HOST': env('DB_HOST'),
-        'PORT': '5432',
-        'OPTIONS': {
-            'sslmode': 'require',
-        },
-    }
+    'default': dj_database_url.parse(env('DATABASE_URL'), conn_max_age=600, ssl_require=True)
 }
 
 # Password validation
