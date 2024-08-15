@@ -143,7 +143,7 @@ import {
   Box,
   Button,
 } from "@mui/material";
-import { styled } from "@emotion/styled";
+import styled from "@emotion/styled";
 import { Link } from "react-router-dom";
 
 // Styled components

@@ -9,7 +9,7 @@ export default defineConfig({
       // External dependencies are typically only needed if you're
       // not bundling them with your application, such as using a CDN.
 
-      external: [],
+      external: ["react", "react-dom"],
     },
     outDir: "dist", // Ensure the build output is in the 'dist' directory
   },
