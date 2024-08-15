@@ -4,6 +4,7 @@ import Card from "@mui/material/Card";
 import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
 import Paginationbottom from "./Pagination";
+import React from "react";
 function Imagesection() {
   const sampleProducts = [
     { id: 1, imageUrl: "https://via.placeholder.com/150", name: "Product 1" },

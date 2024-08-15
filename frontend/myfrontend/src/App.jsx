@@ -5,6 +5,7 @@ import {
   useLocation,
   Navigate,
 } from "react-router-dom";
+import React from "react";
 import "./index.css";
 import NotFound from "./views/NotFound";
 import { AuthProvider } from "./context/AuthContext";

@@ -11,7 +11,7 @@ import { addItemToCart } from "../context/CartApi";
 import { useContext } from "react";
 import AuthContext from "../context/AuthContext";
 import swal from "sweetalert2";
-
+import React from "react";
 function DashboardImagesection() {
   const [products, setProducts] = useState([]);
   const [cartQuantities, setCartQuantities] = useState({});

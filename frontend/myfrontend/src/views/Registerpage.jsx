@@ -79,7 +79,8 @@ export default function RegisterSide() {
 
       if (name === "confirmPassword" || name === "password") {
         confirmPasswordError =
-          value === inputValues.password || value === inputValues.confirmPassword
+          value === inputValues.password ||
+          value === inputValues.confirmPassword
             ? ""
             : "Passwords do not match";
       }

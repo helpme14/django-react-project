@@ -3,12 +3,11 @@ import PropTypes from "prop-types";
 import CssBaseline from "@mui/material/CssBaseline";
 import Box from "@mui/material/Box";
 
-
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import AutoAwesomeRoundedIcon from "@mui/icons-material/AutoAwesomeRounded";
 import AppAppBar from "../views/AppAppBar";
-
+import React from "react";
 
 function ToggleCustomTheme({ showCustomTheme, toggleCustomTheme }) {
   return (

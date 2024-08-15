@@ -3,6 +3,7 @@ import { jwtDecode } from "jwt-decode"; // Make sure to install this
 import { useNavigate, useLocation } from "react-router-dom";
 import swal from "sweetalert2";
 import PropTypes from "prop-types";
+import React from "react";
 
 const AuthContext = createContext();
 
