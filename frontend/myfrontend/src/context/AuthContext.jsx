@@ -25,7 +25,7 @@ export const AuthProvider = ({ children }) => {
 
   const loginUser = async (email, password) => {
     const response = await fetch(
-      "http://127.0.0.1:8000/authentication/token/",
+      "https://my-django-react.onrender.com/authentication/token/",
       {
         method: "POST",
         headers: {
@@ -72,7 +72,7 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem("authTokens");
 
     const response = await fetch(
-      "http://127.0.0.1:8000/authentication/register/",
+      "https://my-django-react.onrender.com/authentication/register/",
       {
         method: "POST",
         headers: {
@@ -123,13 +123,16 @@ export const AuthProvider = ({ children }) => {
 
   const refreshToken = async () => {
     try {
-      const response = await fetch("http://127.0.0.1:8000/api/token/refresh/", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ refresh: authTokens?.refresh }),
-      });
+      const response = await fetch(
+        "https://my-django-react.onrender.com/authentication/token/refresh/",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ refresh: authTokens?.refresh }),
+        }
+      );
       const data = await response.json();
 
       if (response.status === 200) {
@@ -145,7 +148,6 @@ export const AuthProvider = ({ children }) => {
       logoutUser();
     }
   };
-  
 
   useEffect(() => {
     if (authTokens) {

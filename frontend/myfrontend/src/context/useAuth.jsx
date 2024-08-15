@@ -3,7 +3,7 @@ import AuthContext from "../context/AuthContext"; // Adjust based on your file s
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 
-const API_URL = "http://localhost:8000/authentication/refresh/";
+const API_URL = "https://my-django-react.onrender.com/authentication/refresh/";
 
 const useAuth = () => {
   const { authTokens, setAuthTokens } = useContext(AuthContext);

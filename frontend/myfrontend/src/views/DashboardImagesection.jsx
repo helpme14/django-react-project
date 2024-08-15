@@ -21,7 +21,7 @@ function DashboardImagesection() {
     const fetchProducts = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:8000/catalog/products/"
+          "https://my-django-react.onrender.com/catalog/products/"
         );
         setProducts(response.data);
       } catch (error) {

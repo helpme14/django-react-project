@@ -1,7 +1,7 @@
 import axios from "axios";
 import { jwtDecode } from "jwt-decode"; // Make sure the import is correct
 
-const API_URL = "http://localhost:8000/cart/";
+const API_URL = "https://my-django-react.onrender.com/cart/";
 
 const getAuthHeaders = async (authTokens, refreshToken) => {
   if (!authTokens || !authTokens.access || !refreshToken) {

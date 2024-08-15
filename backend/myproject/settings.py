@@ -16,7 +16,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config('SECRET_KEY', default='your-default-secret-key')
 DEBUG = config('DEBUG', default=False, cast=bool)
 
-ALLOWED_HOSTS = ['my-django-react.onrender.com']
+ALLOWED_HOSTS = ['my-django-react.onrender.com','127.0.0.1']
 
 # Application definition
 INSTALLED_APPS = [
@@ -114,6 +114,11 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+
+
+
+
 
 # Ensure this directory contains your static files
 # Uncomment and use if you have additional static files directories
