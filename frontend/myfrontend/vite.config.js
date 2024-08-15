@@ -6,7 +6,8 @@ export default defineConfig({
   base: "./",
   plugins: [react()],
   build: {
-    outDir: "dist", // Ensure the build output is in the 'dist' directory
+    outDir: "dist",
+    chunkSizeWarningLimit: 1000,
   },
   server: {
     host: "0.0.0.0", // Listen on all network interfaces
