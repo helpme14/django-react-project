@@ -6,10 +6,13 @@ export default defineConfig({
   plugins: [react()],
   build: {
     rollupOptions: {
-      external: ["react", "react-dom"],
-    },
-  },
+      // External dependencies are typically only needed if you're
+      // not bundling them with your application, such as using a CDN.
 
+      external: [],
+    },
+    outDir: "dist", // Ensure the build output is in the 'dist' directory
+  },
   server: {
     host: "0.0.0.0", // Listen on all network interfaces
     port: 5173, // Port number (optional, if you want to specify a port)
