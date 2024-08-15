@@ -5,6 +5,7 @@ import { useMediaQuery } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import Imagesection from "./Imagesection"; // Import Imagesection
 import React from "react";
+import { Link } from "react-router-dom";
 
 function Homepage() {
   const theme = useTheme();

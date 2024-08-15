@@ -11,6 +11,7 @@ import Drawer from "@mui/material/Drawer";
 import MenuIcon from "@mui/icons-material/Menu";
 import logo from "../utils/logo.png";
 import TextField from "@mui/material/TextField"; // Import TextField
+import { Link } from "react-router-dom";
 
 const logoStyle = {
   width: "50px", // adjust the width as needed
@@ -146,8 +147,8 @@ function AppAppBar() {
                 color="primary"
                 variant="text"
                 size="small"
-                component="a"
-                href="/login"
+                component={Link}
+                to="/login"
               >
                 Sign in
               </Button>
@@ -155,12 +156,10 @@ function AppAppBar() {
                 color="primary"
                 variant="contained"
                 size="small"
-                component="a"
-                href="/register"
+                component={Link}
+                to="/register"
                 onClick={(e) => {
-                  e.preventDefault();
                   console.log("Sign up button clicked");
-                  window.location.href = "/register";
                 }}
               >
                 Sign up
@@ -215,24 +214,21 @@ function AppAppBar() {
                     <Button
                       color="primary"
                       variant="contained"
-                      component="a"
-                      href="/register"
+                      component={Link}
+                      to="/register"
                       onClick={(e) => {
-                        e.preventDefault();
                         console.log("Sign up button clicked");
-                        window.location.href = "/register";
                       }}
                       sx={{ width: "100%" }}
                     >
                       Sign up
                     </Button>
                   </MenuItem>
-                  <MenuItem>
+                  <MenuItem component={Link} to="/login">
                     <Button
                       color="primary"
                       variant="outlined"
                       component="a"
-                      href="/login"
                       sx={{ width: "100%" }}
                     >
                       Sign in
